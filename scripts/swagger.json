@@ -1,0 +1,631 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "OpenShift provides builds, application lifecycle, image content management,\nand administrative policy on top of Kubernetes. The API allows consistent\nmanagement of those objects.\n\nAll API operations are authenticated via an Authorization\tbearer token that\nis provided for service accounts as a generated secret (in JWT form) or via\nthe native OAuth endpoint located at /oauth/authorize. Core infrastructure\ncomponents may use client certificates that require no authentication.\n\nAll API operations return a 'resourceVersion' string that represents the\nversion of the object in the underlying storage. The standard LIST operation\nperforms a snapshot read of the underlying objects, returning a resourceVersion\nrepresenting a consistent version of the listed objects. The WATCH operation\nallows all updates to a set of objects after the provided resourceVersion to\nbe observed by a client. By listing and beginning a watch from the returned\nresourceVersion, clients may observe a consistent view of the state of one\nor more objects. Note that WATCH always returns the update after the provided\nresourceVersion. Watch may be extended a limited time in the past - using\netcd 2 the watch window is 1000 events (which on a large cluster may only\nbe a few tens of seconds) so clients must explicitly handle the \"watch\nto old error\" by re-listing.\n\nObjects are divided into two rough categories - those that have a lifecycle\nand must reflect the state of the cluster, and those that have no state.\nObjects with lifecycle typically have three main sections:\n\n* 'metadata' common to all objects\n* a 'spec' that represents the desired state\n* a 'status' that represents how much of the desired state is reflected on\n  the cluster at the current time\n\nObjects that have no state have 'metadata' but may lack a 'spec' or 'status'\nsection.\n\nObjects are divided into those that are namespace scoped (only exist inside\nof a namespace) and those that are cluster scoped (exist outside of\na namespace). A namespace scoped resource will be deleted when the namespace\nis deleted and cannot be created if the namespace has not yet been created\nor is in the process of deletion. Cluster scoped resources are typically\nonly accessible to admins - resources like nodes, persistent volumes, and\ncluster policy.\n\nAll objects have a schema that is a combination of the 'kind' and\n'apiVersion' fields. This schema is additive only for any given version -\nno backwards incompatible changes are allowed without incrementing the\napiVersion. The server will return and accept a number of standard\nresponses that share a common schema - for instance, the common\nerror type is 'unversioned.Status' (described below) and will be returned\non any error from the API server.\n\nThe API is available in multiple serialization formats - the default is\nJSON (Accept: application/json and Content-Type: application/json) but\nclients may also use YAML (application/yaml) or the native Protobuf\nschema (application/vnd.kubernetes.protobuf). Note that the format\nof the WATCH API call is slightly different - for JSON it returns newline\ndelimited objects while for Protobuf it returns length-delimited frames\n(4 bytes in network-order) that contain a 'versioned.Watch' Protobuf\nobject.\n\nSee the OpenShift documentation at https://docs.openshift.org for more\ninformation.\n",
+    "title": "OpenShift API (with Kubernetes)",
+    "license": {
+      "name": "Apache 2.0 (ASL2.0)",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version": "latest"
+  },
+  "paths": {
+    "/apis/vulnerability.getup.io/v1/clairreports": {
+      "get": {
+        "operationId": "listClairReports",
+        "summary": "Gets Resources",
+        "description": "Returns a list of Resources",
+        "tags": [
+          "vulnerability_getup_io_v1"
+        ],
+        "consumes": [
+          "*/*"
+        ],
+        "produces": [
+          "application/json",
+          "application/yaml",
+          "application/vnd.kubernetes.protobuf",
+          "application/json;stream=watch",
+          "application/vnd.kubernetes.protobuf;stream=watch"
+        ],
+        "parameters": [
+          {
+            "uniqueItems": true,
+            "type": "string",
+            "description": "A selector to restrict the list of returned objects by their fields. Defaults to everything.",
+            "name": "fieldSelector",
+            "in": "query"
+          },
+          {
+            "uniqueItems": true,
+            "type": "string",
+            "description": "A selector to restrict the list of returned objects by their labels. Defaults to everything.",
+            "name": "labelSelector",
+            "in": "query"
+          },
+          {
+            "uniqueItems": true,
+            "type": "string",
+            "description": "When specified with a watch call, shows changes that occur after that particular version of a resource. Defaults to changes from the beginning of history.",
+            "name": "resourceVersion",
+            "in": "query"
+          },
+          {
+            "uniqueItems": true,
+            "type": "integer",
+            "description": "Timeout for the list/watch call.",
+            "name": "timeoutSeconds",
+            "in": "query"
+          },
+          {
+            "uniqueItems": true,
+            "type": "boolean",
+            "description": "Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.",
+            "name": "watch",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of Resources",
+            "schema": {
+              "$ref": "#/definitions/v1.ClairReportList"
+            }
+          }
+        }
+      }
+    },
+    "/apis/vulnerability.getup.io/v1/namespaces/{namespace}/clairreports": {
+      "get": {
+        "operationId": "listNamespacedClairReports",
+        "summary": "Gets Resources",
+        "description": "Returns a list of namespaced Resources",
+        "tags": [
+          "vulnerability_getup_io_v1"
+        ],
+        "consumes": [
+          "*/*"
+        ],
+        "produces": [
+          "application/json",
+          "application/yaml",
+          "application/vnd.kubernetes.protobuf",
+          "application/json;stream=watch",
+          "application/vnd.kubernetes.protobuf;stream=watch"
+        ],
+        "parameters": [
+          {
+            "name": "watch",
+            "uniqueItems": true,
+            "type": "boolean",
+            "description": "Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.",
+            "in": "query"
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": true,
+            "description": "The Resource's namespace",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of Resources",
+            "schema": {
+              "$ref": "#/definitions/v1.ClairReportList"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createNamespacedClairReport",
+        "summary": "Create a Resource",
+        "description": "Creates a namespaced ClairReport",
+        "tags": [
+          "vulnerability_getup_io_v1"
+        ],
+        "consumes": [
+          "*/*"
+        ],
+        "produces": [
+          "application/json",
+          "application/yaml",
+          "application/vnd.kubernetes.protobuf"
+        ],
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": true,
+            "description": "The Resource's namespace",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "The JSON schema of the Resource to create.",
+            "schema": {
+              "$ref": "#/definitions/v1.ClairReport"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1.ClairReport"
+            }
+          }
+        }
+      }
+    },
+    "/apis/vulnerability.getup.io/v1/namespaces/{namespace}/clairreports/{name}": {
+      "get": {
+        "operationId": "getNamespacedClairReport",
+        "summary": "Gets a specific namespaced ClairReport",
+        "description": "Returns a specific namespaced ClairReport",
+        "tags": [
+          "vulnerability_getup_io_v1"
+        ],
+        "consumes": [
+          "*/*"
+        ],
+        "produces": [
+          "application/json",
+          "application/yaml",
+          "application/vnd.kubernetes.protobuf"
+        ],
+        "responses": {
+          "200": {
+            "description": "A single ClairReport",
+            "schema": {
+              "$ref": "#/definitions/v1.ClairReport"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateNamespacedClairReport",
+        "summary": "Update a ClairReport",
+        "description": "Update the specified namespaced ClairReport of the type specified",
+        "tags": [
+          "vulnerability_getup_io_v1"
+        ],
+        "consumes": [
+          "*/*"
+        ],
+        "produces": [
+          "application/json",
+          "application/yaml",
+          "application/vnd.kubernetes.protobuf"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "The JSON schema of the Resource to create.",
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1.ClairReport"
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patchNamespacedClairReport",
+        "summary": "Partially update a specific namespaced ClariReport",
+        "description": "Partially update the specified namespaced ClairReport",
+        "tags": [
+          "vulnerability_getup_io_v1"
+        ],
+        "consumes": [
+          "application/json-patch+json",
+          "application/merge-patch+json",
+          "application/strategic-merge-patch+json"
+        ],
+        "produces": [
+          "application/json",
+          "application/yaml",
+          "application/vnd.kubernetes.protobuf"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.",
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1.ClairReport"
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteNamespacedClairReport",
+        "summary": "Deletes a specific namespaced ClariReport",
+        "description": "Deletes the specified namespaced ClariReport",
+        "tags": [
+          "vulnerability_getup_io_v1"
+        ],
+        "consumes": [
+          "*/*"
+        ],
+        "produces": [
+          "application/json",
+          "application/yaml",
+          "application/vnd.kubernetes.protobuf"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.DeleteOptions"
+            }
+          },
+          {
+            "name": "gracePeriodSeconds",
+            "uniqueItems": true,
+            "type": "integer",
+            "description": "The duration in seconds before the object should be deleted. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period for the specified type will be used. Defaults to a per object value if not specified. zero means delete immediately.",
+            "in": "query"
+          },
+          {
+            "name": "orphanDependents",
+            "uniqueItems": true,
+            "type": "boolean",
+            "description": "Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7. Should the dependent objects be orphaned. If true/false, the \"orphan\" finalizer will be added to/removed from the object's finalizers list. Either this field or PropagationPolicy may be set, but not both.",
+            "in": "query"
+          },
+          {
+            "name": "propagationPolicy",
+            "uniqueItems": true,
+            "type": "string",
+            "description": "Whether and how garbage collection will be performed. Either this field or OrphanDependents may be set, but not both. The default policy is decided by the existing finalizer set in the metadata.finalizers and the resource-specific default policy.",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1.ClairReport"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "namespace",
+          "in": "path",
+          "required": true,
+          "description": "The Resource's namespace",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "description": "The ClairReport's name",
+          "type": "string"
+        },
+        {
+          "uniqueItems": true,
+          "type": "string",
+          "description": "If 'true', then the output is pretty printed.",
+          "name": "pretty",
+          "in": "query"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "v1.ClairReportList": {
+      "description": "ClairReportList is a list of Pods.",
+      "required": [
+        "items"
+      ],
+      "properties": {
+        "apiVersion": {
+          "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#resources",
+          "type": "string"
+        },
+        "items": {
+          "description": "List of pods. More info: http://kubernetes.io/docs/user-guide/pods",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.ClairReport"
+          }
+        },
+        "kind": {
+          "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#types-kinds",
+          "type": "string"
+        },
+        "metadata": {
+          "description": "Standard list metadata. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#types-kinds",
+          "$ref": "#/definitions/unversioned.ListMeta"
+        }
+      }
+    },
+    "v1.ClairReport": {
+      "description": "ClairReport is a vulnerability scan report.",
+      "properties": {
+        "apiVersion": {
+          "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#resources",
+          "type": "string"
+        },
+        "kind": {
+          "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#types-kinds",
+          "type": "string"
+        },
+        "metadata": {
+          "description": "Standard object's metadata. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#metadata",
+          "$ref": "#/definitions/v1.ObjectMeta"
+        },
+        "imageRepository": {
+          "description": "Image repository URL",
+          "type": "string"
+        },
+        "tags": {
+          "description": "List of tracked Image Stream Tags",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.ClairReportTag"
+          }
+        },
+        "status": {
+          "description": "Status of this scan",
+          "type": "string"
+        },
+        "ownerReferences": {
+          "description": "List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.OwnerReference"
+          }
+        }
+      }
+    },
+    "v1.ClairReportTag": {
+      "description": "ClairReport is a vulnerability scan report for a specif tag.",
+      "properties": {
+        "tag": {
+          "description": "Tag name",
+          "type": "string"
+        },
+        "creationTimestamp": {
+          "description": "CreationTimestamp is a timestamp representing the server time when this tag was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.\n\nPopulated by the system. Read-only. Null for lists. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#metadata",
+          "type": "string",
+          "format": "date-time"
+        },
+        "latestImage": {
+          "description": "Hash for latest seen image",
+          "type": "string"
+        },
+        "layerCount": {
+          "description": "Standard object's metadata. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#metadata",
+          "type": "integer"
+        },
+        "vulnerabilities": {
+          "description": "List of found vulnerabilities",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.ClairReportVulnerability"
+          }
+        }
+      }
+    },
+    "v1.ClairReportVulnerability": {
+      "description": "ClairReport is a singe vulnerability.",
+      "properties": {
+        "name": {
+          "description": "Vulnerability name",
+          "type": "string"
+        },
+        "namespaceName": {
+          "description": "Vulnerability namespace name",
+          "type": "string"
+        },
+        "description": {
+          "description": "Vulnerability description",
+          "type": "string"
+        },
+        "link": {
+          "description": "Vulnerability link",
+          "type": "string"
+        },
+        "severity": {
+          "description": "Vulnerability severity",
+          "type": "string"
+        },
+        "fixedBy": {
+          "description": "Which package version this vulnerability was fixed",
+          "type": "string"
+        }
+      }
+    },
+    "unversioned.ListMeta": {
+      "description": "ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.",
+      "properties": {
+        "resourceVersion": {
+          "description": "String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#concurrency-control-and-consistency",
+          "type": "string"
+        },
+        "selfLink": {
+          "description": "SelfLink is a URL representing this object. Populated by the system. Read-only.",
+          "type": "string"
+        }
+      }
+    },
+    "v1.ObjectMeta": {
+      "description": "ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create.",
+      "properties": {
+        "annotations": {
+          "description": "Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "clusterName": {
+          "description": "The name of the cluster which the object belongs to. This is used to distinguish resources with same name and namespace in different clusters. This field is not set anywhere right now and apiserver is going to ignore it if set in create or update request.",
+          "type": "string"
+        },
+        "creationTimestamp": {
+          "description": "CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.\n\nPopulated by the system. Read-only. Null for lists. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#metadata",
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletionGracePeriodSeconds": {
+          "description": "Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "deletionTimestamp": {
+          "description": "DeletionTimestamp is RFC 3339 date and time at which this resource will be deleted. This field is set by the server when a graceful deletion is requested by the user, and is not directly settable by a client. The resource is expected to be deleted (no longer visible from resource lists, and not reachable by name) after the time in this field. Once set, this value may not be unset or be set further into the future, although it may be shortened or the resource may be deleted prior to this time. For example, a user may request that a pod is deleted in 30 seconds. The Kubelet will react by sending a graceful termination signal to the containers in the pod. After that 30 seconds, the Kubelet will send a hard termination signal (SIGKILL) to the container and after cleanup, remove the pod from the API. In the presence of network partitions, this object may still exist after this timestamp, until an administrator or automated process can determine the resource is fully terminated. If not set, graceful deletion of the object has not been requested.\n\nPopulated by the system when a graceful deletion is requested. Read-only. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#metadata",
+          "type": "string",
+          "format": "date-time"
+        },
+        "finalizers": {
+          "description": "Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "generateName": {
+          "description": "GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.\n\nIf this field is specified and the generated name exists, the server will NOT return a 409 - instead, it will either return 201 Created or 500 with Reason ServerTimeout indicating a unique name could not be found in the time allotted, and the client should retry (optionally after the time indicated in the Retry-After header).\n\nApplied only if Name is not specified. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#idempotency",
+          "type": "string"
+        },
+        "generation": {
+          "description": "A sequence number representing a specific generation of the desired state. Populated by the system. Read-only.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "labels": {
+          "description": "Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "description": "Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/identifiers#names",
+          "type": "string"
+        },
+        "namespace": {
+          "description": "Namespace defines the space within each name must be unique. An empty namespace is equivalent to the \"default\" namespace, but \"default\" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.\n\nMust be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces",
+          "type": "string"
+        },
+        "ownerReferences": {
+          "description": "List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.OwnerReference"
+          }
+        },
+        "resourceVersion": {
+          "description": "An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.\n\nPopulated by the system. Read-only. Value must be treated as opaque by clients and . More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#concurrency-control-and-consistency",
+          "type": "string"
+        },
+        "selfLink": {
+          "description": "SelfLink is a URL representing this object. Populated by the system. Read-only.",
+          "type": "string"
+        },
+        "uid": {
+          "description": "UID is the unique in time and space value for this object. It is typically generated by the server on successful creation of a resource and is not allowed to change on PUT operations.\n\nPopulated by the system. Read-only. More info: http://kubernetes.io/docs/user-guide/identifiers#uids",
+          "type": "string"
+        }
+      }
+    },
+    "v1.OwnerReference": {
+      "description": "OwnerReference contains enough information to let you identify an owning object. Currently, an owning object must be in the same namespace, so there is no namespace field.",
+      "required": [
+        "apiVersion",
+        "kind",
+        "name",
+        "uid"
+      ],
+      "properties": {
+        "apiVersion": {
+          "description": "API version of the referent.",
+          "type": "string"
+        },
+        "controller": {
+          "description": "If true, this reference points to the managing controller.",
+          "type": "boolean"
+        },
+        "kind": {
+          "description": "Kind of the referent. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#types-kinds",
+          "type": "string"
+        },
+        "name": {
+          "description": "Name of the referent. More info: http://kubernetes.io/docs/user-guide/identifiers#names",
+          "type": "string"
+        },
+        "uid": {
+          "description": "UID of the referent. More info: http://kubernetes.io/docs/user-guide/identifiers#uids",
+          "type": "string"
+        }
+      }
+    },
+    "v1.DeleteOptions": {
+      "description": "DeleteOptions may be provided when deleting an API object",
+      "properties": {
+        "apiVersion": {
+          "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#resources",
+          "type": "string"
+        },
+        "gracePeriodSeconds": {
+          "description": "The duration in seconds before the object should be deleted. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period for the specified type will be used. Defaults to a per object value if not specified. zero means delete immediately.",
+          "type": "integer",
+          "format": "int64"
+        },
+        "kind": {
+          "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: http://releases.k8s.io/HEAD/docs/devel/api-conventions.md#types-kinds",
+          "type": "string"
+        },
+        "orphanDependents": {
+          "description": "Should the dependent objects be orphaned. If true/false, the \"orphan\" finalizer will be added to/removed from the object's finalizers list.",
+          "type": "boolean"
+        },
+        "preconditions": {
+          "description": "Must be fulfilled before a deletion is carried out. If not possible, a 409 Conflict status will be returned.",
+          "$ref": "#/definitions/v1.Preconditions"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "BearerToken": {
+      "in": "header",
+      "type": "apiKey",
+      "description": "Bearer Token authentication",
+      "name": "authorization"
+    }
+  },
+  "security": [
+    {
+      "BearerToken": []
+    }
+  ]
+}

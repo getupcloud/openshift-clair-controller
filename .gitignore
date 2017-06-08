@@ -1,0 +1,11 @@
+r
+.cache
+.env
+.serviceaccount
+*.crt
+*.swp
+*.pyc
+*.pyo
+dist
+build
+__pycache__

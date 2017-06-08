@@ -1,0 +1,48 @@
+#!/bin/bash
+cat <<EOF
+{
+    "LayerCount":27,
+    "Vulnerabilities":[
+        {
+            "Name":"RHSA-2016:2779",
+            "NamespaceName":"centos:7",
+            "Description":"Network Security Services (NSS) is a set of libraries designed to support the cross-platform development of security-enabled client and server applications. The nss-util packages provide utilities for use with the Network Security Services (NSS) libraries. The following packages have been upgraded to a newer upstream version: nss (3.21.3), nss-util (3.21.3). Security Fix(es): * Multiple buffer handling flaws were found in the way NSS handled cryptographic data from the network. A remote attacker could use these flaws to crash an application using NSS or, possibly, execute arbitrary code with the permission of the user running the application. (CVE-2016-2834) * A NULL pointer dereference flaw was found in the way NSS handled invalid Diffie-Hellman keys. A remote client could use this flaw to crash a TLS/SSL server using NSS. (CVE-2016-5285) * It was found that Diffie Hellman Client key exchange handling in NSS was vulnerable to small subgroup confinement attack. An attacker could use this flaw to recover private keys by confining the client DH key to small subgroup of the desired group. (CVE-2016-8635) Red Hat would like to thank the Mozilla project for reporting CVE-2016-2834. The CVE-2016-8635 issue was discovered by Hubert Kario (Red Hat). Upstream acknowledges Tyson Smith and Jed Davis as the original reporter of CVE-2016-2834.",
+            "Link":"https://rhn.redhat.com/errata/RHSA-2016-2779.html",
+            "Severity":"Medium",
+            "FixedBy":"3.21.3-2.el7_3"
+        },
+        {
+            "Name":"RHSA-2017:1365",
+            "NamespaceName":"centos:7",
+            "Description":"Network Security Services (NSS) is a set of libraries designed to support the cross-platform development of security-enabled client and server applications. Security Fix(es): * A null pointer dereference flaw was found in the way NSS handled empty SSLv2 messages. An attacker could use this flaw to crash a server application compiled against the NSS library. (CVE-2017-7502) Bug Fix(es): * The Network Security Services (NSS) code and Certificate Authority (CA) list have been updated to meet the recommendations as published with the latest Mozilla Firefox Extended Support Release (ESR). The updated CA list improves compatibility with the certificates that are used in the Internet Public Key Infrastructure (PKI). To avoid certificate validation refusals, Red Hat recommends installing the updated CA list on June 12, 2017. (BZ#1451421)",
+            "Link":"https://access.redhat.com/errata/RHSA-2017:1365",
+            "Severity":"High",
+            "FixedBy":"3.28.4-1.2.el7_3"
+        },
+        {
+            "Name":"RHSA-2017:1100",
+            "NamespaceName":"centos:7",
+            "Description":"Network Security Services (NSS) is a set of libraries designed to support the cross-platform development of security-enabled client and server applications. The nss-util packages provide utilities for use with the Network Security Services (NSS) libraries. The following packages have been upgraded to a newer upstream version: nss (3.28.4), nss-util (3.28.4). Security Fix(es): * An out-of-bounds write flaw was found in the way NSS performed certain Base64-decoding operations. An attacker could use this flaw to create a specially crafted certificate which, when parsed by NSS, could cause it to crash or execute arbitrary code, using the permissions of the user running an application compiled against the NSS library. (CVE-2017-5461) Red Hat would like to thank the Mozilla project for reporting this issue. Upstream acknowledges Ronald Crane as the original reporter.",
+            "Link":"https://access.redhat.com/errata/RHSA-2017:1100",
+            "Severity":"Critical",
+            "FixedBy":"3.28.4-1.0.el7_3"
+        },
+        {
+            "Name":"RHSA-2016:2588",
+            "NamespaceName":"centos:7",
+            "Description":"OpenSSH is an SSH protocol implementation supported by a number of Linux, UNIX, and similar operating systems. It includes the core files necessary for both the OpenSSH client and server. Security Fix(es): * It was discovered that the OpenSSH sshd daemon fetched PAM environment settings before running the login program. In configurations with UseLogin=yes and the pam_env PAM module configured to read user environment settings, a local user could use this flaw to execute arbitrary code as root. (CVE-2015-8325) Additional Changes: For detailed information on changes in this release, see the Red Hat Enterprise Linux 7.3 Release Notes linked from the References section.",
+            "Link":"https://rhn.redhat.com/errata/RHSA-2016-2588.html",
+            "Severity":"Medium",
+            "FixedBy":"6.6.1p1-31.el7"
+        },
+        {
+            "Name":"RHSA-2016:2779",
+            "NamespaceName":"centos:7",
+            "Description":"Network Security Services (NSS) is a set of libraries designed to support the cross-platform development of security-enabled client and server applications. The nss-util packages provide utilities for use with the Network Security Services (NSS) libraries. The following packages have been upgraded to a newer upstream version: nss (3.21.3), nss-util (3.21.3). Security Fix(es): * Multiple buffer handling flaws were found in the way NSS handled cryptographic data from the network. A remote attacker could use these flaws to crash an application using NSS or, possibly, execute arbitrary code with the permission of the user running the application. (CVE-2016-2834) * A NULL pointer dereference flaw was found in the way NSS handled invalid Diffie-Hellman keys. A remote client could use this flaw to crash a TLS/SSL server using NSS. (CVE-2016-5285) * It was found that Diffie Hellman Client key exchange handling in NSS was vulnerable to small subgroup confinement attack. An attacker could use this flaw to recover private keys by confining the client DH key to small subgroup of the desired group. (CVE-2016-8635) Red Hat would like to thank the Mozilla project for reporting CVE-2016-2834. The CVE-2016-8635 issue was discovered by Hubert Kario (Red Hat). Upstream acknowledges Tyson Smith and Jed Davis as the original reporter of CVE-2016-2834.",
+            "Link":"https://rhn.redhat.com/errata/RHSA-2016-2779.html",
+            "Severity":"Medium",
+            "FixedBy":"3.21.3-1.1.el7_3"
+        }
+    ]
+}
+EOF
